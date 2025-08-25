@@ -1,8 +1,8 @@
-// Favorieten Pagina JavaScript
+// Favorieten Pagina JavaScript - Version Corrigée
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Favorieten pagina geladen');
     
-    // Functie om favorieten weer te geven
+    // Fonction pour afficher les favoris
     function displayFavorites() {
         const favoritesList = document.getElementById('favorite-locations');
         if (!favoritesList) {
@@ -10,23 +10,35 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Haal favorieten op uit localStorage
+        // Récupérer les favoris depuis localStorage
         const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         
-        console.log('Geladen favorieten:', favorites.length);
+        console.log('Geladen favorieten:', favorites.length, favorites);
 
         if (favorites.length === 0) {
             favoritesList.innerHTML = `
-                <div class="no-favorites">
-                    <h3>Nog geen favorieten</h3>
-                    <p>Je hebt nog geen favoriete parkeerlocaties toegevoegd.</p>
-                    <p>Ga naar de <a href="index.html#explore">hoofdpagina</a> om parkeerlocaties te verkennen en toe te voegen aan je favorieten.</p>
+                <div class="no-favorites" style="
+                    text-align: center;
+                    padding: 60px 20px;
+                    background: white;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    margin: 20px 0;
+                ">
+                    <h3 style="color: #38577C; font-size: 24px; margin-bottom: 15px;">Nog geen favorieten</h3>
+                    <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 10px;">
+                        Je hebt nog geen favoriete parkeerlocaties toegevoegd.
+                    </p>
+                    <p style="color: #666; font-size: 16px; line-height: 1.6;">
+                        Ga naar de <a href="index.html#explore" style="color: #38577C; text-decoration: none; font-weight: bold;">hoofdpagina</a> 
+                        om parkeerlocaties te verkennen en toe te voegen aan je favorieten.
+                    </p>
                 </div>
             `;
             return;
         }
 
-        // Maak HTML voor elke favoriet
+        // Créer le HTML pour chaque favori
         const favoritesHTML = favorites.map((location, index) => {
             const name = location.name_nl || location.nom_fr || 'Naamloos parking';
             const address = location.adres_ || location.adresse || 'Adres niet beschikbaar';
@@ -34,46 +46,108 @@ document.addEventListener('DOMContentLoaded', () => {
             const operator = location.operator_fr || location.operator_nl || 'Onbekend';
             const phone = location.contact_phone || 'Niet beschikbaar';
             
-            // Verbeterde afhandeling van handicap plaatsen
+            // Gestion améliorée des places handicapées
             let disabled = 'Niet opgegeven';
             if (location.disabledcapacity !== undefined && location.disabledcapacity !== null && location.disabledcapacity !== '') {
                 disabled = location.disabledcapacity;
             } else if (location.disabled_capacity !== undefined && location.disabled_capacity !== null && location.disabled_capacity !== '') {
                 disabled = location.disabled_capacity;
-            } else if (location.handicapped_capacity !== undefined && location.handicapped_capacity !== null && location.handicapped_capacity !== '') {
-                disabled = location.handicapped_capacity;
-            } else if (location.pmr_capacity !== undefined && location.pmr_capacity !== null && location.pmr_capacity !== '') {
-                disabled = location.pmr_capacity;
             }
             
-            // Zorg ervoor dat het een nummer is
+            // S'assurer que c'est un nombre
             if (disabled !== 'Niet opgegeven' && !isNaN(disabled)) {
                 disabled = parseInt(disabled) || 0;
             }
 
             return `
-                <div class="favorite-item" data-index="${index}">
-                    <div class="favorite-header">
-                        <h3>${name}</h3>
-                        <button class="remove-favorite" data-index="${index}" title="Verwijder uit favorieten">
+                <div class="favorite-item" data-index="${index}" style="
+                    background: white;
+                    border: 1px solid #e9ecef;
+                    border-radius: 12px;
+                    padding: 20px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    margin-bottom: 20px;
+                    transition: all 0.3s ease;
+                ">
+                    <div class="favorite-header" style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: flex-start;
+                        margin-bottom: 15px;
+                    ">
+                        <h4 style="
+                            color: #38577C;
+                            margin: 0;
+                            font-size: 18px;
+                            flex: 1;
+                            margin-right: 10px;
+                        ">${name}</h4>
+                        <button class="remove-favorite" data-index="${index}" title="Verwijder uit favorieten" style="
+                            background: #f44336;
+                            color: white;
+                            border: none;
+                            width: 30px;
+                            height: 30px;
+                            border-radius: 50%;
+                            cursor: pointer;
+                            font-size: 14px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            transition: all 0.3s ease;
+                        ">
                             🗑️
                         </button>
                     </div>
                     <div class="favorite-details">
-                        <p class="name"><strong></strong> ${name}</p>
-                        <p class="address"><strong>📍</strong> ${address}</p>
-                        <p class="capacity"><strong>🚗</strong> ${capacity} plaatsen</p>
-                        <p class="operator"><strong>🏢</strong> ${operator}</p>
-                        <p class="phone"><strong>📞</strong> ${phone}</p>
-                        <p class="handicap"><strong>♿</strong> ${disabled} ${disabled === 'Niet opgegeven' ? '' : 'handicap plaatsen'}</p>
+                        <p style="margin-bottom: 8px; font-size: 14px; color: #555;">
+                            <strong style="color: #38577C;">📍</strong> ${address}
+                        </p>
+                        <p style="margin-bottom: 8px; font-size: 14px; color: #555;">
+                            <strong style="color: #38577C;">🚗</strong> ${capacity} plaatsen
+                        </p>
+                        <p style="margin-bottom: 8px; font-size: 14px; color: #555;">
+                            <strong style="color: #38577C;">🏢</strong> ${operator}
+                        </p>
+                        <p style="margin-bottom: 8px; font-size: 14px; color: #555;">
+                            <strong style="color: #38577C;">📞</strong> ${phone}
+                        </p>
+                        <p style="margin-bottom: 8px; font-size: 14px; color: #555;">
+                            <strong style="color: #38577C;">♿</strong> ${disabled} ${disabled === 'Niet opgegeven' ? '' : 'handicap plaatsen'}
+                        </p>
                     </div>
-                    <div class="favorite-actions">
+                    <div class="favorite-actions" style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
                         ${location.geo_point_2d ? `
-                            <button class="show-directions" data-lat="${location.geo_point_2d.lat}" data-lon="${location.geo_point_2d.lon}">
-                                🗺️ Toon routebeschrijving
+                            <button class="show-directions" 
+                                    data-lat="${location.geo_point_2d.lat}" 
+                                    data-lon="${location.geo_point_2d.lon}"
+                                    style="
+                                        background: #38577C;
+                                        color: white;
+                                        border: none;
+                                        padding: 8px 12px;
+                                        border-radius: 6px;
+                                        cursor: pointer;
+                                        font-size: 13px;
+                                        transition: all 0.3s ease;
+                                        flex: 1;
+                                    ">
+                                🗺️ Routebeschrijving
                             </button>
                         ` : ''}
-                        <button class="copy-address" data-address="${address}">
+                        <button class="copy-address" 
+                                data-address="${address}"
+                                style="
+                                    background: #4CAF50;
+                                    color: white;
+                                    border: none;
+                                    padding: 8px 12px;
+                                    border-radius: 6px;
+                                    cursor: pointer;
+                                    font-size: 13px;
+                                    transition: all 0.3s ease;
+                                    flex: 1;
+                                ">
                             📋 Kopieer adres
                         </button>
                     </div>
@@ -82,56 +156,155 @@ document.addEventListener('DOMContentLoaded', () => {
         }).join('');
 
         favoritesList.innerHTML = `
-            <div class="favorites-header">
-                <h3>Je hebt ${favorites.length} favoriet${favorites.length === 1 ? '' : 'e'} parkeerlocatie${favorites.length === 1 ? '' : 's'}</h3>
-                <div class="favorites-actions">
-                    <button id="clear-all-favorites" class="clear-all-btn">
+            <div class="favorites-header" style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 30px;
+                padding: 20px;
+                background: linear-gradient(135deg, #38577C 0%, #7897BC 100%);
+                color: white;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            ">
+                <h3 style="color: white; margin: 0; font-size: 24px;">
+                    Je hebt ${favorites.length} favoriet${favorites.length === 1 ? '' : 'e'} parkeerlocatie${favorites.length === 1 ? '' : 's'}
+                </h3>
+                <div class="favorites-actions" style="display: flex; gap: 10px;">
+                    <button id="clear-all-favorites" style="
+                        background: rgba(255, 255, 255, 0.2);
+                        color: white;
+                        border: 2px solid rgba(255, 255, 255, 0.3);
+                        padding: 8px 16px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        transition: all 0.3s ease;
+                    ">
                         🗑️ Wis alle favorieten
                     </button>
-                    <button id="export-favorites" class="export-btn">
+                    <button id="export-favorites" style="
+                        background: rgba(255, 255, 255, 0.2);
+                        color: white;
+                        border: 2px solid rgba(255, 255, 255, 0.3);
+                        padding: 8px 16px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        transition: all 0.3s ease;
+                    ">
                         📤 Exporteer favorieten
                     </button>
                 </div>
             </div>
-            <div class="favorites-grid">
+            <div class="favorites-grid" style="
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+                gap: 20px;
+                margin-bottom: 40px;
+            ">
                 ${favoritesHTML}
             </div>
         `;
+
+        // Ajouter les événements pour les boutons hover
+        addHoverEffects();
     }
 
-    // Event listeners
+    // Fonction pour ajouter les effets hover
+    function addHoverEffects() {
+        // Boutons remove favorite
+        document.querySelectorAll('.remove-favorite').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.background = '#d32f2f';
+                btn.style.transform = 'scale(1.1)';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.background = '#f44336';
+                btn.style.transform = 'scale(1)';
+            });
+        });
+
+        // Boutons show directions
+        document.querySelectorAll('.show-directions').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.background = '#2a4158';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.background = '#38577C';
+            });
+        });
+
+        // Boutons copy address
+        document.querySelectorAll('.copy-address').forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                btn.style.background = '#45a049';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.background = '#4CAF50';
+            });
+        });
+
+        // Boutons header
+        const clearBtn = document.getElementById('clear-all-favorites');
+        const exportBtn = document.getElementById('export-favorites');
+        
+        if (clearBtn) {
+            clearBtn.addEventListener('mouseenter', () => {
+                clearBtn.style.background = '#f44336';
+                clearBtn.style.borderColor = '#f44336';
+            });
+            clearBtn.addEventListener('mouseleave', () => {
+                clearBtn.style.background = 'rgba(255, 255, 255, 0.2)';
+                clearBtn.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+            });
+        }
+
+        if (exportBtn) {
+            exportBtn.addEventListener('mouseenter', () => {
+                exportBtn.style.background = '#4CAF50';
+                exportBtn.style.borderColor = '#4CAF50';
+            });
+            exportBtn.addEventListener('mouseleave', () => {
+                exportBtn.style.background = 'rgba(255, 255, 255, 0.2)';
+                exportBtn.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+            });
+        }
+    }
+
+    // Event listeners principaux
     document.addEventListener('click', (event) => {
-        // Verwijder favoriet
+        // Supprimer favoris
         if (event.target.classList.contains('remove-favorite')) {
             const index = parseInt(event.target.dataset.index);
             removeFavorite(index);
         }
 
-        // Toon routebeschrijving
+        // Afficher directions
         if (event.target.classList.contains('show-directions')) {
             const lat = event.target.dataset.lat;
             const lon = event.target.dataset.lon;
             showDirections(lat, lon);
         }
 
-        // Kopieer adres
+        // Copier adresse
         if (event.target.classList.contains('copy-address')) {
             const address = event.target.dataset.address;
             copyToClipboard(address);
         }
 
-        // Wis alle favorieten
+        // Effacer tous les favoris
         if (event.target.id === 'clear-all-favorites') {
             clearAllFavorites();
         }
 
-        // Exporteer favorieten
+        // Exporter favoris
         if (event.target.id === 'export-favorites') {
             exportFavorites();
         }
     });
 
-    // Functie om een favoriet te verwijderen
+    // Fonction pour supprimer un favoris
     function removeFavorite(index) {
         const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         
@@ -141,15 +314,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (confirm(`Weet je zeker dat je "${locationName}" wilt verwijderen uit je favorieten?`)) {
                 favorites.splice(index, 1);
                 localStorage.setItem('favorites', JSON.stringify(favorites));
-                displayFavorites(); // Herlaad de lijst
+                displayFavorites(); // Recharger la liste
                 
-                // Toon bevestiging
+                // Afficher confirmation
                 showNotification(`"${locationName}" is verwijderd uit je favorieten.`, 'success');
             }
         }
     }
 
-    // Functie om alle favorieten te wissen
+    // Fonction pour effacer tous les favoris
     function clearAllFavorites() {
         const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         
@@ -165,20 +338,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Functie om routebeschrijving te tonen
+    // Fonction pour afficher les directions
     function showDirections(lat, lon) {
-        // Open Google Maps met routebeschrijving
         const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
         window.open(url, '_blank');
     }
 
-    // Functie om adres te kopiëren
+    // Fonction pour copier l'adresse
     async function copyToClipboard(text) {
         try {
             await navigator.clipboard.writeText(text);
             showNotification('Adres gekopieerd naar klembord!', 'success');
         } catch (err) {
-            // Fallback voor oudere browsers
+            // Fallback pour navigateurs plus anciens
             const textArea = document.createElement('textarea');
             textArea.value = text;
             textArea.style.position = 'fixed';
@@ -199,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Functie om favorieten te exporteren
+    // Fonction pour exporter les favoris
     function exportFavorites() {
         const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
         
@@ -208,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Maak CSV bestand
+        // Créer fichier CSV
         const headers = ['Naam', 'Adres', 'Capaciteit', 'Operator', 'Telefoon', 'Handicap Plaatsen'];
         const csvContent = [
             headers.join(','),
@@ -224,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         ].join('\n');
 
-        // Download bestand
+        // Télécharger fichier
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         const url = URL.createObjectURL(blob);
@@ -238,86 +410,76 @@ document.addEventListener('DOMContentLoaded', () => {
         showNotification('Favorieten geëxporteerd als CSV bestand!', 'success');
     }
 
-    // Functie om notificaties te tonen
+    // Fonction pour afficher les notifications
     function showNotification(message, type = 'info') {
-        // Verwijder bestaande notificaties
+        // Supprimer notifications existantes
         const existingNotifications = document.querySelectorAll('.notification');
         existingNotifications.forEach(notification => notification.remove());
 
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
+        notification.style.cssText = `
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: white;
+            border-radius: 8px;
+            padding: 15px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            z-index: 10000;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease;
+            border-left: 4px solid ${type === 'success' ? '#4CAF50' : type === 'error' ? '#f44336' : '#2196F3'};
+        `;
+        
         notification.innerHTML = `
             <span>${message}</span>
-            <button class="notification-close">&times;</button>
+            <button class="notification-close" style="
+                background: none;
+                border: none;
+                font-size: 18px;
+                cursor: pointer;
+                color: #999;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            ">&times;</button>
         `;
 
-        // Voeg toe aan pagina
+        // Ajouter à la page
         document.body.appendChild(notification);
 
-        // Auto verwijderen na 5 seconden
+        // Animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Auto supprimer après 5 secondes
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.remove();
             }
         }, 5000);
 
-        // Manual close
+        // Fermeture manuelle
         notification.querySelector('.notification-close').addEventListener('click', () => {
             notification.remove();
         });
     }
 
-    // Functie om favorieten te sorteren
-    function sortFavorites(sortBy) {
-        const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-        
-        let sorted;
-        switch (sortBy) {
-            case 'name':
-                sorted = [...favorites].sort((a, b) => {
-                    const nameA = a.name_nl || a.nom_fr || '';
-                    const nameB = b.name_nl || b.nom_fr || '';
-                    return nameA.localeCompare(nameB);
-                });
-                break;
-            case 'capacity':
-                sorted = [...favorites].sort((a, b) => {
-                    const capA = parseInt(a.capacity) || 0;
-                    const capB = parseInt(b.capacity) || 0;
-                    return capB - capA;
-                });
-                break;
-            default:
-                sorted = favorites;
-        }
-        
-        localStorage.setItem('favorites', JSON.stringify(sorted));
-        displayFavorites();
-    }
-
-    // Voeg sorteer functionaliteit toe
-    function addSortButtons() {
-        const header = document.querySelector('.favorites-header');
-        if (header && !header.querySelector('.sort-buttons')) {
-            const sortButtons = document.createElement('div');
-            sortButtons.className = 'sort-buttons';
-            sortButtons.innerHTML = `
-                <span>Sorteer op:</span>
-                <button onclick="window.sortFavorites('name')" class="sort-btn">📝 Naam</button>
-                <button onclick="window.sortFavorites('capacity')" class="sort-btn">🚗 Capaciteit</button>
-            `;
-            header.appendChild(sortButtons);
-        }
-    }
-
-    // Maak sorteer functie globaal beschikbaar
-    window.sortFavorites = sortFavorites;
-
-    // Initialiseer de pagina
+    // Initialiser la page
     displayFavorites();
     
-    // Voeg sort buttons toe na een korte delay
-    setTimeout(addSortButtons, 100);
-
     console.log('Favorieten pagina setup compleet');
 });
