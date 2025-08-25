@@ -60,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         </button>
                     </div>
                     <div class="favorite-details">
+                        <p class="name"><strong></strong> ${name}</p>
                         <p class="address"><strong>📍</strong> ${address}</p>
                         <p class="capacity"><strong>🚗</strong> ${capacity} plaatsen</p>
                         <p class="operator"><strong>🏢</strong> ${operator}</p>
